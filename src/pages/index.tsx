@@ -5,6 +5,11 @@ import {styled} from "@mui/system";
 import YAMLEditor from "../components/YAMLEditor";
 
 
+const StyledMain = styled('main')({
+    display: 'flex',
+    flex: 1,
+})
+
 const StyledFooter = styled('footer')({
   display: 'flex',
   flex: 1,
@@ -38,9 +43,9 @@ export default function Home() {
         <link rel="icon" href="/public/favicon.ico" />
       </Head>
 
-      <main>
+      <StyledMain>
         <YAMLEditor/>
-      </main>
+      </StyledMain>
 
       <StyledFooter>
          <span>

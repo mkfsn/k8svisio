@@ -1,30 +1,41 @@
-import {useRef} from "react";
+import React, {createRef} from "react";
 import {loadAll} from "js-yaml";
 import {decodeK8sResource} from "../../utils/k8s";
 
+interface YAMLEditorProps {}
 
-export default function YAMLEditor() {
-  const inputRef = useRef<HTMLTextAreaElement>(null);
+class YAMLEditor extends React.Component<YAMLEditorProps> {
+    private readonly inputRef: React.RefObject<HTMLTextAreaElement>;
 
-  const onClick = (_: any) => {
-    const docs = loadAll(inputRef.current?.value as string);
-    const resources = docs.map((doc: unknown) => {
-        try {
-            return decodeK8sResource(doc);
-        } catch (e) {
-            console.error(e)
-            return null
-        }
-    }).filter(v => v !== null)
+    constructor(props: YAMLEditorProps) {
+        super(props);
+        this.inputRef = createRef<HTMLTextAreaElement>();
+        this.onClick = this.onClick.bind(this);
+    }
 
-    console.log(resources);
-  }
+    render() {
+        return (
+            <>
+                <textarea rows={30} cols={60} ref={this.inputRef} ></textarea>
+                <br/>
+                <button onClick={this.onClick}>Submit</button>
+            </>
+        );
+    }
 
-  return (
-    <>
-      <textarea rows={30} cols={60} ref={inputRef} ></textarea>
-      <br/>
-      <button onClick={onClick}>Submit</button>
-    </>
-  )
+    private onClick(e: React.MouseEvent): void {
+        const docs = loadAll(this.inputRef?.current?.value as string);
+        const resources = docs.map((doc: unknown) => {
+            try {
+                return decodeK8sResource(doc);
+            } catch (e) {
+                console.error(e);
+                return null;
+            }
+        }).filter(v => v !== null);
+
+        console.log(resources);
+    }
 }
+
+export default YAMLEditor;
